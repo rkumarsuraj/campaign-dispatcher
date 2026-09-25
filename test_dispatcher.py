@@ -1,11 +1,3 @@
-"""
-Tests. Run with: python test_dispatcher.py   (no pytest needed)
-
-The important one is test_concurrent_duplicate_claims: it fires 50 simultaneous
-claims for the same (campaign, contact, attempt) key and asserts that exactly one
-wins. That is the idempotency guarantee, verified rather than asserted -- and it is
-the test to open first if asked "how do you know it's correct?"
-"""
 
 from __future__ import annotations
 

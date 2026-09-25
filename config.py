@@ -1,4 +1,3 @@
-"""Campaign configuration. Persisted with the campaign row for reproducibility."""
 
 from __future__ import annotations
 

@@ -1,34 +1,3 @@
-"""
-Persistence layer. All database access lives here.
-
-TWO THINGS TO UNDERSTAND ABOUT THIS FILE:
-
-1. THE IDEMPOTENCY GUARANTEE IS A DATABASE CONSTRAINT, NOT PYTHON CODE.
-   `attempts` has PRIMARY KEY (campaign_id, contact_id, attempt_no). `claim_attempt`
-   INSERTs a row with status='in_flight' *before* the call is placed. If the insert
-   raises IntegrityError, an attempt with that exact key already exists and this
-   caller must not dial. The check ("does it exist?") and the claim ("it's mine")
-   are a single atomic write, so there is no window between them for a second
-   concurrent caller to slip into. Same mechanism as an idempotency key on a
-   payments API preventing a double charge.
-
-2. sqlite3 IS BLOCKING, SO EVERY CALL GOES THROUGH asyncio.to_thread.
-   Calling sqlite3 directly from a coroutine blocks the event loop, which stalls
-   every other in-flight call. At 300 contacts each write is well under a
-   millisecond so it would be practically invisible -- but it is wrong in
-   principle and stops being invisible the moment the database is remote.
-   A threading.Lock serialises access to the single connection.
-
-   That lock is also an honest preview of the scaling problem: SQLite is a
-   single-writer database. Serialising writes is fine in one process and fatal
-   across many, which is exactly why the scaling answer moves to Postgres --
-   keeping this same unique-constraint mechanism, which ports over unchanged.
-
-ON TIMESTAMPS: every timestamp is stored twice -- ISO-8601 UTC for humans reading
-the table, and epoch milliseconds for arithmetic. Doing time maths on ISO strings
-in SQLite means julianday() gymnastics; an integer column makes the analytics
-queries plain.
-"""
 
 from __future__ import annotations
 

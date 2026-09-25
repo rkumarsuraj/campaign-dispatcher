@@ -1,23 +1,3 @@
-"""
-Driver: runs a simulated campaign against a synthetic cohort and prints analytics.
-
-Usage:
-    python run_campaign.py
-    python run_campaign.py --contacts 500 --concurrency 30
-    python run_campaign.py --contacts 300 --concurrency 20 --export attempts.csv
-
-THE IDEMPOTENCY DEMO
-Worth explaining why it is here. In a clean single-process design, duplicate
-dispatches never arise naturally -- the driver enqueues each contact exactly once,
-so the dedupe path would never execute and the guarantee could only be *asserted*,
-never shown. So the driver deliberately submits one contact's attempt-1 job twice,
-concurrently, and then verifies afterwards that exactly one attempt row exists and
-the dedupe counter fired. Disable with --no-dupe-demo.
-
-Note that the duplicate is submitted as a JOB, not as a contact: the
-unresolved-contact counter is set from the cohort size via register_contacts(), so
-a duplicate job cannot inflate it and cannot stall termination.
-"""
 
 from __future__ import annotations
 

@@ -1,28 +1,3 @@
-"""
-Mock telephony provider.
-
-Stands in for a real provider (Twilio / Exotel / Plivo). Simulates network + ring
-time with a random delay, then returns a disposition drawn from a weighted
-distribution.
-
-DISPOSITION DISTRIBUTION (documented, as the assignment asks):
-
-    answered    35%   picked up by a human
-    no_answer   30%   rang out, nobody picked up
-    voicemail   15%   answering machine / voicemail detected (AMD)
-    busy        12%   line engaged
-    failed       8%   provider-side error placing the call
-
-These weights are shaped to look like a plausible BFSI outbound campaign: answered
-is the single largest bucket but still a minority, no_answer is close behind (the
-dominant reason a campaign needs retries at all), and provider-side `failed` is
-deliberately rare, since a provider failing 1-in-12 calls would be a broken provider.
-
-CALL LATENCY: uniform 0.1-2.0s, as specified. Real dial latency isn't uniform --
-answered calls take longer than a busy signal, which returns almost instantly --
-so `LATENCY_BY_DISPOSITION` applies a per-disposition range instead. Set
-`REALISTIC_LATENCY = False` to fall back to a flat uniform(0.1, 2.0).
-"""
 
 from __future__ import annotations
 

@@ -4,4 +4,3 @@ campaign.db
 campaign.db-wal
 campaign.db-shm
 attempts.csv
-.claude/
